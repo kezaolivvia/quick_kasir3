@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#2c1a0e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Quick Kasir" />
+  <title>Quick Kasir - Cafe</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">Quick Kasir</div>
+      <ul>
+        <li><button class="nav-btn active" data-page="kasir">Kasir</button></li>
+        <li><button class="nav-btn" data-page="barang">Menu</button></li>
+        <li><button class="nav-btn" data-page="pengaturan">Pengaturan</button></li>
+        <li><button class="nav-btn" data-page="riwayat">Riwayat</button></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <!-- PAGE: KASIR -->
+      <div id="page-kasir" class="page active">
+        <h2>Kasir</h2>
+        <div class="kasir-layout">
+          <!-- Daftar Barang -->
+          <div class="barang-grid-wrap">
+            <input type="text" id="search-barang" placeholder="Cari menu..." />
+            <div id="kategori-tabs" class="kategori-tabs"></div>
+            <div id="barang-grid" class="barang-grid"></div>
+          </div>
+          <!-- Tombol buka keranjang (mobile only) -->
+          <button id="btn-buka-keranjang" class="btn-buka-keranjang" style="display:none">
+            🛒 Lihat Keranjang (<span id="keranjang-count-fab">0</span> item)
+          </button>
+
+          <!-- Keranjang -->
+          <div class="keranjang" id="keranjang-panel">
+            <div class="keranjang-header">
+              <h3>Keranjang <span id="keranjang-count" style="font-size:0.75rem;background:#a0522d;color:#fff;border-radius:20px;padding:1px 8px;margin-left:4px"></span></h3>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="kasir-badge">👤 <span id="label-kasir-aktif">-</span></div>
+                <button id="btn-toggle-keranjang" class="keranjang-toggle" style="display:none">✕ Tutup</button>
+              </div>
+            </div>
+            <div class="form-row" style="gap:8px;margin-bottom:8px">
+              <div class="form-group" style="margin-bottom:0">
+                <label>Nama Pelanggan</label>
+                <input type="text" id="nama-pelanggan" placeholder="Contoh: Budi" />
+              </div>
+            </div>
+            <div class="keranjang-scroll-body">
+            <div id="keranjang-list" class="keranjang-list"></div>
+            <div class="summary">
+              <div class="summary-row"><span>Subtotal</span><span id="subtotal">Rp 0</span></div>
+              <div class="summary-row"><span id="label-diskon">Diskon (0%)</span><span id="total-diskon">- Rp 0</span></div>
+              <div class="summary-row"><span id="label-pajak">Pajak (0%)</span><span id="total-pajak">+ Rp 0</span></div>
+              <div class="summary-row total"><span>Total</span><span id="grand-total">Rp 0</span></div>
+            </div>
+            <div class="bayar-section">
+              <label>Metode Pembayaran</label>
+              <select id="metode-bayar">
+                <option value="cash">Cash</option>
+                <option value="qris">QRIS / e-Wallet (Gopay, OVO, Dana)</option>
+                <option value="transfer">Transfer Bank</option>
+              </select>
+              <div id="cash-input-wrap">
+                <label>Uang Bayar</label>
+                <input type="number" id="uang-bayar" placeholder="Masukkan nominal..." min="0" />
+                <div class="summary-row"><span>Kembalian</span><span id="kembalian">Rp 0</span></div>
+              </div>
+              <button id="btn-bayar" class="btn-primary">Bayar Sekarang</button>
+              <button id="btn-clear" class="btn-secondary">Kosongkan</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: BARANG -->
+      <div id="page-barang" class="page">
+        <h2>Kelola Menu</h2>
+        <div class="form-card">
+          <h3 id="form-barang-title">Tambah Menu</h3>
+          <input type="hidden" id="edit-id" />
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nama Menu</label>
+              <input type="text" id="nama-barang" placeholder="Contoh: Kopi Susu" />
+            </div>
+            <div class="form-group">
+              <label>Kategori</label>
+              <input type="text" id="kategori-barang" placeholder="Contoh: Minuman" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Harga (Rp)</label>
+              <input type="number" id="harga-barang" placeholder="Contoh: 25000" min="0" />
+            </div>
+            <div class="form-group">
+              <label>Stok</label>
+              <input type="number" id="stok-barang" placeholder="Contoh: 50" min="0" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="btn-simpan-barang" class="btn-primary">Simpan</button>
+            <button id="btn-batal-barang" class="btn-secondary" style="display:none">Batal</button>
+          </div>
+        </div>
+        <div id="barang-table-wrap">
+          <input type="text" id="search-barang-table" placeholder="Cari menu..." style="margin-bottom:12px" />
+          <table class="data-table">
+            <thead>
+              <tr><th>Nama Menu</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr>
+            </thead>
+            <tbody id="barang-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAGE: PENGATURAN -->
+      <div id="page-pengaturan" class="page">
+        <h2>Pengaturan</h2>
+        <div class="form-card" style="max-width:400px">
+          <div class="form-group">
+            <label>Diskon Global (%)</label>
+            <input type="number" id="set-diskon" placeholder="0" min="0" max="100" />
+          </div>
+          <div class="form-group">
+            <label>Pajak / PPN (%)</label>
+            <input type="number" id="set-pajak" placeholder="0" min="0" max="100" />
+          </div>
+          <div class="form-group">
+            <label>Nama Toko</label>
+            <input type="text" id="set-nama-toko" placeholder="Quick Kasir" />
+          </div>
+          <div class="form-group">
+            <label>Nama Kasir Aktif</label>
+            <input type="text" id="set-nama-kasir" placeholder="Contoh: Andi" />
+          </div>
+          <button id="btn-simpan-setting" class="btn-primary">Simpan Pengaturan</button>
+          <p id="setting-saved" class="success-msg" style="display:none">✅ Pengaturan tersimpan!</p>
+        </div>
+      </div>
+
+      <!-- PAGE: RIWAYAT -->
+      <div id="page-riwayat" class="page">
+        <h2>Riwayat Transaksi</h2>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input type="date" id="filter-tanggal" />
+          <button id="btn-filter" class="btn-secondary">Filter</button>
+          <button id="btn-reset-filter" class="btn-secondary">Reset</button>
+          <button id="btn-hapus-riwayat" class="btn-danger" style="margin-left:auto">Hapus Semua</button>
+        </div>
+        <div id="riwayat-list"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal Struk -->
+  <div id="modal-struk" class="modal-overlay" style="display:none">
+    <div class="modal">
+      <div id="struk-content"></div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button id="btn-print" class="btn-primary">🖨️ Print</button>
+        <button id="btn-close-modal" class="btn-secondary">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

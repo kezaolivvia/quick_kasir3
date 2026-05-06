@@ -212,9 +212,13 @@ document.getElementById('btn-bayar').addEventListener('click', () => {
   });
   DB.set('barang', barangList);
 
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const trxId = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
   const trx = {
-    id: 'TRX-' + Date.now(),
-    tanggal: new Date().toISOString(),
+    id: trxId,
+    tanggal: now.toISOString(),
     namaPelanggan: document.getElementById('nama-pelanggan').value.trim() || 'Umum',
     namaKasir: settings.namaKasir || '-',
     items: keranjang.map(k => ({ ...k })),
